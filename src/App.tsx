@@ -1,56 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import { FormProvider, useForm } from "react-hook-form";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import { AuthRoute } from "./components/AuthRoute";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { Analytics } from "./pages/Analytics";
+import { DashboardContent } from "./pages/Dashboard/index";
+import { SignIn } from "./pages/SignIn";
+import { SignUp } from "./pages/SignUp";
+import { LocalizationProvider } from "@mui/lab";
+import { Scopes } from "./pages/Scopes";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
+  const methods = useForm();
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <FormProvider {...methods} >
+          <Router>
+            <Switch>
+              <AuthRoute exact path="/" component={SignIn} label="Sign In" />
+              <AuthRoute exact path="/signup" component={SignUp} label="Sign Up" />
+              <ProtectedRoute exact path="/tasks" component={DashboardContent} label="Tasks" />
+              <ProtectedRoute exact path="/scopes" component={Scopes} label="Tasks" />
+              <ProtectedRoute exact path="/reports" component={DashboardContent} label="Reports" />
+              <ProtectedRoute exact path="/analytics" component={Analytics} label="Analytics" />
+            </Switch>
+          </Router>
+        </FormProvider>
+      </LocalizationProvider>
+      <ToastContainer />
     </div>
   );
 }
